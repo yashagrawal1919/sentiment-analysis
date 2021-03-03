@@ -1,0 +1,61 @@
+<% include ./partials/header %>
+
+<div class="search-box">
+    <!-- <form action="#" method="GET"> -->
+        <div class="input-box">
+          <input style="width:90%;display:inline-block;margin-right:10px;" type="text" placeholder="Search" name="search" id="search" >
+          <i style="font-size:28px;" class="fas fa-microphone"></i>
+        </div>
+        <!-- <input class="search" type="submit" value="Search"> -->
+        <button class="search">Search</button>
+    <!-- </form> -->
+  </div>
+  <div class="result">
+
+  </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+
+  <script>
+      window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      const recognition = new SpeechRecognition();
+      const icon = document.querySelector('i');
+      const inputElem = document.querySelector('.input-box input[type="text"]');
+  
+      icon.addEventListener('click', () => {
+        dictate();
+      });
+  
+      const dictate = () => {
+        recognition.start();
+        recognition.onresult = (event) => {
+          const speechToText = event.results[0][0].transcript;
+          inputElem.value = speechToText;
+          console.log(speechToText);
+        }
+      }
+
+      document.querySelector('.search').addEventListener('click', googleApiClientReady);
+
+      function googleApiClientReady() {
+        var apiKey = 'AIzaSyB_G51uofg2lKj7B7lax7bnxuH-E5ouQqw';
+    
+        gapi.client.setApiKey(apiKey);
+        gapi.client.load('youtube', 'v3', function() {
+            isLoad = true;
+        }); 
+        let query = document.querySelector('#search').value();
+        request = gapi.client.youtube.search.list({
+            q: query,
+            part: 'snippet'
+         });
+        request.execute(function(response) {
+            //your code to here
+        });
+    }
+
+
+  </script>
+
+<% include ./partials/script %>
+<% include ./partials/footer %>
